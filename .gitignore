@@ -1,0 +1,18 @@
+# Secrets & Config
+.env
+config/settings.yaml
+
+# Data & Logs (Never upload raw PII data)
+data/raw/*.xlsx
+data/logs/*.log
+data/logs/*.csv
+
+# Python environment
+__pycache__/
+.venv/
+venv/
+*.pyc
+
+# IDE settings
+.vscode/
+.idea/

@@ -1,0 +1,30 @@
+csa-interviewer-performance-automation/
+├── .env                    # SECRET: SMTP passwords (GIT IGNORED)
+├── .gitignore              # Standard Python gitignore + .env + data/
+├── README.md               # Documentation for other engineers
+├── requirements.txt        # Project dependencies
+│
+├── config/                 # Configuration Layer
+│   └── settings.yaml       # File paths, SMTP hosts, and column mappings
+│
+├── data/                   # Data Layer (Input/Output)
+│   ├── raw/                # Original FOL and SPESE Excel files
+│   └── logs/               # Execution logs and "Sent" history
+│
+├── templates/              # Presentation Layer
+│   ├── fol_report.html     # Jinja2 template for FOL emails
+│   └── spese_report.html   # Jinja2 template for SPESE emails
+│
+├── src/                    # Logic Layer (The Engine)
+│   ├── __init__.py         # Makes 'src' a package
+│   ├── bootstrap.py        # Loads Config and Environment variables
+│   ├── reader.py           # Pandas logic to ingest Excel
+│   ├── transformer.py      # Logic to format metrics (rounding, etc.)
+│   ├── mailer.py           # SMTP connection and sending logic
+│   └── validator.py        # Data quality checks (e.g., is email valid?)
+│
+├── tests/                  # Quality Assurance Layer
+│   ├── test_reader.py      # Unit tests for Excel loading
+│   └── test_transformer.py # Unit tests for metric calculations
+│
+└── main.py                 # The Orchestrator (Entry point)
