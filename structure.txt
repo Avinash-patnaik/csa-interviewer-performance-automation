@@ -9,7 +9,8 @@ csa-interviewer-performance-automation/
 │
 ├── data/                   # Data Layer (Input/Output)
 │   ├── raw/                # Original FOL and SPESE Excel files
-│   └── logs/               # Execution logs and "Sent" history
+|              
+├── logs/                   # Execution logs and "Sent" history
 │
 ├── templates/              # Presentation Layer
 │   ├── fol_report.html     # Jinja2 template for FOL emails
