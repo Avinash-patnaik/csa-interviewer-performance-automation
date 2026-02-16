@@ -2,11 +2,8 @@
 .env
 config/settings.yaml
 
-
-data/raw/*.xlsx
-data/logs/*.log
-data/logs/*.csv
-
+data/
+logs/
 
 __pycache__/
 .venv/
