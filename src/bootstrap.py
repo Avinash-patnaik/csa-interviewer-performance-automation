@@ -2,9 +2,14 @@ import yaml
 import os
 from dotenv import load_dotenv
 
-def load_all_configs():
-    """Combines .env secrets and YAML settings into one dictionary."""
+def load_env():
+    """Explicitly loads the .env file from the root directory."""
     load_dotenv()
+
+
+def load_config():
+    """Combines .env secrets and YAML settings into one dictionary."""
+    load_env()
 
     config_path = os.path.join("config", "settings.yaml")
     with open(config_path, "r") as f:

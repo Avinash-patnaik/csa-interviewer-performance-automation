@@ -1,7 +1,7 @@
 import streamlit as st
 import os
 import pandas as pd
-from main import process_files  # Importing the orchestrator logic
+from main import process_files  
 
 # Page Configuration
 st.set_page_config(page_title="CSA Mailer Control Center", page_icon="📧")
@@ -17,7 +17,7 @@ campaign_type = st.radio(
 )
 
 # 2. Folder Path Check
-# As per your structure, we look into data/raw/ [cite: 2]
+# Points to data/raw/ as defined in the Data Layer 
 raw_path = "data/raw/"
 
 if st.button(f"Run {campaign_type} Pipeline"):
@@ -25,14 +25,15 @@ if st.button(f"Run {campaign_type} Pipeline"):
     prefix = "FOL" if campaign_type == "FOLCAPI" else "SPESE"
     
     with st.status(f"Processing {campaign_type}...", expanded=True) as status:
-        st.write("🔍 Scanning `data/raw/` for new files...")
+        st.write(f"🔍 Scanning `{raw_path}` for new files...")
         
         try:
-            # Triggering the main processing logic 
+            # Triggering the main processing logic from main.py
             process_files(directory=raw_path, file_prefix=prefix, report_type=prefix)
             
             status.update(label=f"{campaign_type} Pipeline Completed!", state="complete", expanded=False)
-            st.success(f"Emails sent! Check the logs/sent_history.log for details.") [cite: 3]
+            # Success notification and path to history logs 
+            st.success("Emails sent! Check the `logs/sent_history.log` for details.")
             
         except Exception as e:
             st.error(f"An error occurred during the process: {e}")
@@ -41,11 +42,12 @@ if st.button(f"Run {campaign_type} Pipeline"):
 # 3. Execution Logs Preview
 st.divider()
 st.subheader("📊 Recent Activity")
-log_file = "logs/execution.log" [cite: 3]
+# Reading from the logs directory 
+log_file = "logs/execution.log"
 
 if os.path.exists(log_file):
     with open(log_file, "r") as f:
-        # Show last 15 lines of logs
+        # Show last 15 lines of logs for quick debugging
         log_lines = f.readlines()[-15:]
         st.code("".join(log_lines), language="text")
 else:
