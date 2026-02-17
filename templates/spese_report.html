@@ -2,53 +2,57 @@
 <html>
 <head>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #2c3e50; }
-        .header { background-color: #27ae60; color: white; padding: 25px; text-align: center; border-radius: 8px 8px 0 0; }
-        .content { padding: 20px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; }
-        .container { width: 100%; margin-top: 20px; border-spacing: 15px; border-collapse: separate; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+        .header { background-color: #004a99; color: white; padding: 30px; text-align: center; }
+        .logo { max-width: 150px; margin-bottom: 15px; }
+        .content { padding: 30px; max-width: 800px; margin: auto; }
+        .container-table { width: 100%; border-spacing: 15px; border-collapse: separate; }
         .card { 
             width: 50%; 
-            border: 1px solid #dcdde1; 
-            border-radius: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
             padding: 20px;
-            background-color: #ffffff;
+            background-color: #f9f9f9;
             vertical-align: top;
         }
         .section-title { 
-            color: #27ae60; 
-            border-bottom: 2px solid #27ae60; 
+            color: #004a99; 
+            border-bottom: 2px solid #004a99; 
             padding-bottom: 8px; 
             margin-bottom: 15px;
             text-transform: uppercase;
             font-size: 13px;
             font-weight: bold;
-            letter-spacing: 1px;
         }
-        table.metrics-table { width: 100%; }
-        .metrics-table td { padding: 12px 0; border-bottom: 1px solid #f1f2f6; }
-        .label { font-size: 13px; color: #7f8c8d; }
-        .value { text-align: right; color: #27ae60; font-weight: bold; font-size: 16px; }
-        .footer { font-size: 11px; color: #95a5a6; margin-top: 30px; text-align: center; }
-        .highlight { color: #27ae60; font-weight: bold; }
+        .metrics-table { width: 100%; border-collapse: collapse; }
+        .metrics-table td { padding: 12px 0; border-bottom: 1px solid #eee; }
+        .label { font-size: 13px; color: #555; }
+        .value { text-align: right; color: #004a99; font-weight: bold; font-size: 15px; }
+        .footer { font-size: 11px; color: #777; margin-top: 40px; text-align: center; border-top: 1px solid #eee; padding-top: 20px; }
+        .time-ref { color: #666; font-style: italic; margin-top: -10px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Report Performance SPESE</h1>
-        <p>Monitoraggio Rilevazione Scientifica</p>
+        {% if logo_base64 %}
+            <img src="{{ logo_base64 }}" alt="Logo" class="logo">
+        {% endif %}
+        <h1 style="margin:0;">Rapporto Performance Rilevatore</h1>
+        <p style="margin:5px 0 0 0;">Indagine: {{ user.report_type }}</p>
     </div>
 
     <div class="content">
-        <p>Gentile <span class="highlight">{{ user.name }}</span>,</p>
-        <p>Ti inviamo il riepilogo della tua attività per l'indagine <strong>SPESE</strong> relativa alla regione <strong>{{ user.regione }}</strong>.</p>
+        <p>Gentile <strong>{{ user.name }}</strong> (ID: {{ user.rilevatore_id }}),</p>
+        <p>Di seguito sono riportati i tuoi indicatori di performance aggiornati per la regione: <strong>{{ user.regione }}</strong>.</p>
+        <p class="time-ref">Riferimento temporale: <strong>{{ user.periodo }} {{ user.anno }}</strong></p>
 
-        <table class="container">
+        <table class="container-table">
             <tr>
                 <td class="card">
-                    <div class="section-title">Benchmark Nazionale</div>
+                    <div class="section-title">Medie Nazionali</div>
                     <table class="metrics-table">
                         <tr>
-                            <td class="label">Tasso Complessivo</td>
+                            <td class="label">Completezza Complessiva</td>
                             <td class="value">{{ user.metrics.nazionale.completezza }}</td>
                         </tr>
                         <tr>
@@ -56,7 +60,7 @@
                             <td class="value">{{ user.metrics.nazionale.due_settimane }}</td>
                         </tr>
                         <tr>
-                            <td class="label">Recapiti Spese</td>
+                            <td class="label">Recapiti Inseriti</td>
                             <td class="value">{{ user.metrics.nazionale.recapiti }}</td>
                         </tr>
                     </table>
@@ -66,11 +70,11 @@
                     <div class="section-title">Performance Regionale</div>
                     <table class="metrics-table">
                         <tr>
-                            <td class="label">Tasso Regionale</td>
+                            <td class="label">Completezza Regionale</td>
                             <td class="value">{{ user.metrics.regionale.completezza }}</td>
                         </tr>
                         <tr>
-                            <td class="label">Regionale 2 Settimane</td>
+                            <td class="label">Prime 2 Settimane</td>
                             <td class="value">{{ user.metrics.regionale.due_settimane }}</td>
                         </tr>
                         <tr>
@@ -83,8 +87,8 @@
         </table>
 
         <div class="footer">
-            <p>ID Rilevatore: {{ user.rilevatore_id }} | Generato il: 17/02/2026</p>
-            <p>Si prega di non rispondere a questa email. Per assistenza contattare il coordinamento CSA.</p>
+            <p>Questa è una comunicazione automatica inviata dal sistema CSA Research.</p>
+            <p>&copy; 2026 CSA Research per ISTAT</p>
         </div>
     </div>
 </body>

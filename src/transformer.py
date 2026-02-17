@@ -27,20 +27,19 @@ class DataTransformer:
                 "recapiti": "% Recapiti Regionali Spese"
             }
         }
+
     def format_pct(self, value):
         try:
             if value is None or str(value).lower() == 'nan':
                 return "0%"
-            
             if isinstance(value, (float, int)):
                 if value <= 1.0:
                     return f"{round(value * 100, 1)}%"
                 return f"{round(value, 1)}%"
-            
             return str(value)
         except:
             return str(value)
-        
+
     def transform_row(self, row, report_type="FOL"):
         try:
             transformed = {
@@ -48,25 +47,24 @@ class DataTransformer:
                 "name": str(row.get("Nome Rilevatore", "")).title(),
                 "email": str(row.get("Email", "")).strip().lower(),
                 "regione": row.get("Regione", "N/A"),
+                "periodo": row.get("periodo", "N/D"),
+                "anno": row.get("Anno", "N/D"),
                 "report_type": report_type.upper(),
-                "metrics": {
-                    "nazionale": {},
-                    "regionale": {}
-                }
+                "metrics": {"nazionale": {}, "regionale": {}}
             }
 
             mapping = self.fol_mapping if "FOL" in report_type.upper() else self.spese_mapping 
             
             transformed["metrics"]["nazionale"] = {
-                "completezza": row.get(mapping["nazionale"]["completezza"], "0%"),
-                "due_settimane": row.get(mapping["nazionale"]["due_settimane"], "0%"),
-                "recapiti": row.get(mapping["nazionale"]["recapiti"], "0%")
+                "completezza": self.format_pct(row.get(mapping["nazionale"]["completezza"])),
+                "due_settimane": self.format_pct(row.get(mapping["nazionale"]["due_settimane"])),
+                "recapiti": self.format_pct(row.get(mapping["nazionale"]["recapiti"]))
             }
 
             transformed["metrics"]["regionale"] = {
-                "completezza": row.get(mapping["regionale"]["completezza"], "0%"),
-                "due_settimane": row.get(mapping["regionale"]["due_settimane"], "0%"),
-                "recapiti": row.get(mapping["regionale"]["recapiti"], "0%")
+                "completezza": self.format_pct(row.get(mapping["regionale"]["completezza"])),
+                "due_settimane": self.format_pct(row.get(mapping["regionale"]["due_settimane"])),
+                "recapiti": self.format_pct(row.get(mapping["regionale"]["recapiti"]))
             }
 
             return transformed
@@ -78,10 +76,8 @@ class DataTransformer:
     def process_batch(self, dataframe, report_type="FOL"):
         raw_records = dataframe.to_dict(orient="records")
         clean_records = []
-
         for record in raw_records:
             clean_data = self.transform_row(record, report_type)
             if clean_data:
                 clean_records.append(clean_data)
-        
         return clean_records
