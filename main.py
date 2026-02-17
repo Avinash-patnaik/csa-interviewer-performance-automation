@@ -1,54 +1,64 @@
 import os
-import tkinter as tk
-from tkinter import messagebox, font
-from src.reader import get_latest_file, rename_file
+import logging
+from datetime import datetime
+from src.bootstrap import load_config, load_env
+from src.reader import load_data
+from src.validator import DataValidator
+from src.transformer import DataTransformer
+from src.mailer import Mailer
 
-class MailerGUI:
-    def __init__(self, root):
-        self.root = root 
-        self.root.title("CSA Interviewer Performance Automation")
-        self.root.geometry("400x200")
+# Initialize Logging for the logic layer 
+logging.basicConfig(
+    filename='logs/execution.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
-        # Set custom font
-        title_font = font.Font(family="Helvetica", size=16, weight="bold")
-
-        # Heading 
-        tk.Label(root, text="CSA Interviewer Performance Automation", font=title_font).pack(pady=20)
-        tk.Label(root, text="Click the button below to send performance emails").pack(pady=10)
-
-        # Send Emails Button
-        tk.Button(root, text="FOLCAPI", width=25, height=2,
-                  bg="#22b10f", command=lambda: self.start_process("FOLCAPI")).pack(pady=10)
+def process_files(directory, file_prefix, report_type):
+    """
+    Main Pipeline Logic: Read -> Validate -> Transform -> Mail.
+    This function is now the entry point for the Streamlit GUI.
+    """
+    load_env()
+    config = load_config()
     
-        tk.Button(root, text="SPESE", width=25, height=2,
-                  bg="#153ceb", command=lambda: self.start_process("SPESE")).pack(pady=10)
+    validator = DataValidator()
+    transformer = DataTransformer()
+    mailer = Mailer(config) 
+
+    target_files = [f for f in os.listdir(directory) if f.startswith(file_prefix)]
+    
+    if not target_files:
+        logging.warning(f"No files found for {file_prefix} in {directory}")
+        raise FileNotFoundError(f"No {file_prefix} files found in {directory}")
+
+    for file_name in target_files:
+        file_path = os.path.join(directory, file_name)
+        logging.info(f"Processing: {file_name}")
         
-    def start_process(self, mode):
-
-        folder_path = f"data/{mode}/"
-
-        target_file = get_latest_file(folder_path)
-
-        if not target_file:
-            messagebox.showwarning("No File", f"No new files found in {folder_path}")
-            return
-
-        # 3. Confirmation Dialog
-        if messagebox.askyesno("Confirm", f"Process latest file: {os.path.basename(target_file)}?"):
-            try:
-                # --- START PIPELINE ---
-                # df = load_excel(target_file)
-                # status = run_mailer_logic(df, mode)
-                # -----------------------
-                
-                # 4. Rename file after success
-                new_name = rename_file(target_file)
-                messagebox.showinfo("Success", f"Emails sent! File renamed to: {new_name}")
-                
-            except Exception as e:
-                messagebox.showerror("Error", f"An error occurred: {str(e)}")
+        df = load_data(file_path)
+        
+        # 4. VALIDATE: Ensure emails and data are clean [cite: 5, 6]
+        valid_rows = validator.filter_valid_data(df)
+        
+        # 5. TRANSFORM: Prepare metrics for the specific report type [cite: 4]
+        clean_records = transformer.process_batch(valid_rows, report_type)
+        
+        # 6. MAIL: Send using templates 
+        template = "fol_report.html" if report_type == "FOL" else "spese_report.html"
+        
+        for record in clean_records:
+            success = mailer.send_performance_email(
+                recipient=record['email'],
+                template_name=template,
+                context={'user': record}
+            )
+            
+            if success:
+                with open("logs/sent_history.log", "a") as f:
+                    f.write(f"{datetime.now()}, {record['email']}, {file_name}\n")
+        
+    return True
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = MailerGUI(root)
-    root.mainloop()
+    process_files(directory="data/raw/", file_prefix="FOL", report_type="FOL")
