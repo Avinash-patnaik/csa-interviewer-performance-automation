@@ -1,35 +1,38 @@
 import streamlit as st
 import os
-import pandas as pd
-from main import process_files  
+from main import process_files  # Importing the orchestrator logic
+
 
 st.set_page_config(page_title="CSA Mailer Control Center", page_icon="📧")
 
 st.title("🚀 CSA Interviewer Performance Automation")
-st.markdown("Select the campaign type below to process Excel files and send emails.")
+st.markdown("Select the campaign type to process files from their specific folders.")
 
 campaign_type = st.radio(
     "Select Campaign Type:",
     ("FOLCAPI", "SPESE"),
-    help="This determines which files are scanned and which email template is used."
+    help="FOL files are read from data/folcapi/ and SPESE from data/spese/"
 )
 
-raw_path = "data/raw/"
+if campaign_type == "FOLCAPI":
+    target_dir = "data/folcapi/"
+    file_prefix = "FOL"
+else:
+    target_dir = "data/spese/"
+    file_prefix = "SPESE"
 
 if st.button(f"Run {campaign_type} Pipeline"):
-    prefix = "FOL" if campaign_type == "FOLCAPI" else "SPESE"
-    
     with st.status(f"Processing {campaign_type}...", expanded=True) as status:
-        st.write(f"🔍 Scanning `{raw_path}` for new files...")
+        st.write(f"🔍 Searching in `{target_dir}` for files starting with `{file_prefix}`...")
         
         try:
-            process_files(directory=raw_path, file_prefix=prefix, report_type=prefix)
+            process_files(directory=target_dir, file_prefix=file_prefix, report_type=file_prefix)
             
             status.update(label=f"{campaign_type} Pipeline Completed!", state="complete", expanded=False)
-            st.success("Emails sent! Check the `logs/sent_history.log` for details.")
+            st.success(f"Emails sent successfully! Review `logs/sent_history.log`.")
             
         except Exception as e:
-            st.error(f"An error occurred during the process: {e}")
+            st.error(f"Pipeline Error: {e}")
             status.update(label="Pipeline Failed", state="error")
 
 st.divider()
@@ -38,7 +41,7 @@ log_file = "logs/execution.log"
 
 if os.path.exists(log_file):
     with open(log_file, "r") as f:
-        log_lines = f.readlines()[-15:]
+        log_lines = f.readlines()[-10:]
         st.code("".join(log_lines), language="text")
 else:
     st.info("No logs found. Run a pipeline to generate activity history.")
