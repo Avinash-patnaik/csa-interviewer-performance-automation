@@ -1,37 +1,31 @@
 import pandas as pd
-import os 
 import logging
+import os
 
 def load_data(file_path):
-    """
-    Reads an Excel or CSV file into a pandas DataFrame.
-    Supports both .xlsx and .csv formats.
-    """
     try:
         if file_path.endswith(('.xlsx', '.xls')):
-            df = pd.read_excel(file_path)
+            df = pd.read_excel(file_path, header=None)
         elif file_path.endswith('.csv'):
-            df = pd.read_csv(file_path)
+            df = pd.read_csv(file_path, header=None)
         else:
-            raise ValueError("Unsupported file format. Only .xlsx and .csv are allowed.")
+            raise ValueError("Unsupported file format.")
+
+        header_row_index = 0
+        for i, row in df.iterrows():
+            if "Rilevatore" in row.values:
+                header_row_index = i
+                break
         
-        logging.info(f"Loaded data from {file_path} with shape {df.shape}")
-
+        df.columns = df.iloc[header_row_index]
+        df = df.iloc[header_row_index + 1:].reset_index(drop=True)
         df.columns = df.columns.str.strip()
-
         df = df.dropna(how='all') 
+        df = df.loc[:, df.columns.notnull()]
 
-        logging.info(f"Data after cleaning has shape {df.shape}")
-
+        logging.info(f"Loaded {file_path} - Header at row {header_row_index}")
         return df
 
     except Exception as e:
-            logging.error(f"Error loading data from {file_path}: {e}")
-            raise
-    
-def get_rilevatore_email(df):
-    """
-    Extracts the email address of the Rilevatore from the DataFrame.        
-    Assumes the email is in a column named 'Email' and that there is only one unique email per file.
-    """
-    return df.to_dict(orient="records")[0].get("Email", "").strip().lower()
+        logging.error(f"Reader Error: {e}")
+        raise

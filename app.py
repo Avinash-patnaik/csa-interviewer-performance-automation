@@ -1,55 +1,70 @@
 import streamlit as st
 import os
+import base64
 from PIL import Image
-from main import process_files  
+from main import process_files
 
+st.set_page_config(page_title="CSA Mailer Control Center", page_icon="📧", layout="wide")
 
-st.set_page_config(page_title="CSA Mailer Control Center", page_icon="📧")
+st.markdown(
+    """
+    <style>
+    [data-testid="stHorizontalBlock"] {
+        align-items: center !important;
+    }
+    .main-title {
+        margin-bottom: 0px;
+        padding-top: 0px;
+        font-weight: 700;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 LOGO_PATH = os.path.join(os.getcwd(), "CSA-RESEARCH.png")
 
-col1, col2 = st.columns([0.1, 0.9])
+col1, col2 = st.columns([0.2, 0.9])
 
 with col1:
     if os.path.exists(LOGO_PATH):
-        logo_img = Image.open(LOGO_PATH)
-        st.image(logo_img, width=100)
+        st.image(LOGO_PATH, width=90)
     else:
-        st.write("🏢") # Fallback if logo is missing
+        st.write("🏢")
 
 with col2:
-    st.title("CSA Interviewer Performance Automation")
-st.markdown("Select the survey type to process files from their specific folders.")
+    st.markdown("<h1 class='main-title'>CSA Interviewer Performance Automation</h1>", unsafe_allow_html=True)
 
-campaign_type = st.radio(
+st.markdown("---")
+
+survey_type = st.radio(
     "Select Survey Type:",
     ("FOLCAPI", "SPESE"),
     help="FOL files are read from data/folcapi/ and SPESE from data/spese/"
 )
 
-if campaign_type == "FOLCAPI":
+if survey_type == "FOLCAPI":
     target_dir = "data/folcapi/"
     file_prefix = "FOL"
 else:
     target_dir = "data/spese/"
     file_prefix = "SPESE"
 
-if st.button(f"Run {campaign_type} Pipeline"):
-    with st.status(f"Processing {campaign_type}...", expanded=True) as status:
-        st.write(f"🔍 Searching in `{target_dir}` for files starting with `{file_prefix}`...")
+if st.button(f"🚀 Run {survey_type} Pipeline"):
+    with st.status(f"Processing {survey_type}...", expanded=True) as status:
+        st.write(f"🔍 Scanning directory: `{target_dir}`")
         
         try:
             process_files(directory=target_dir, file_prefix=file_prefix, report_type=file_prefix)
-            
-            status.update(label=f"{campaign_type} Pipeline Completed!", state="complete", expanded=False)
-            st.success(f"Emails sent successfully! Review `logs/sent_history.log`.")
+            status.update(label=f"{survey_type} Pipeline Completed!", state="complete", expanded=False)
+            st.success(f"Emails sent! Audit trail updated in `logs/sent_history.log`")
             
         except Exception as e:
-            st.error(f"Pipeline Error: {e}")
-            status.update(label="Pipeline Failed", state="error")
+            st.error(f"Pipeline Failed: {e}")
+            status.update(label="Error Occurred", state="error")
 
 st.divider()
-st.subheader("📊 Recent Activity")
+st.subheader("📊 Recent Execution Logs")
 log_file = "logs/execution.log"
 
 if os.path.exists(log_file):

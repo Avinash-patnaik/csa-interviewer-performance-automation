@@ -1,11 +1,6 @@
 import logging
 
 class DataTransformer:
-    """
-    Handles the mapping and sanitization of raw Excel/CSV data 
-    into a structured format for email templates.
-    """
-    
     def __init__(self):
         self.fol_mapping = {
             "nazionale": {
@@ -19,23 +14,35 @@ class DataTransformer:
                 "recapiti": "% Recapiti telefonici inseriti FOL"
             }
         }
+        
+        self.spese_mapping = {
+            "nazionale": {
+                "completezza": "Tasso Complessivo Spese",
+                "due_settimane": "Tasso Prime 2 Settimane Spese",
+                "recapiti": "% Recapiti Spese"
+            },
+            "regionale": {
+                "completezza": "% Tasso Regionale Spese",
+                "due_settimane": "% Tasso Regionale 2 Settimane",
+                "recapiti": "% Recapiti Regionali Spese"
+            }
+        }
 
     def transform_row(self, row, report_type="FOL"):
-        """
-        Transforms a single row (dictionary) from the pandas reader into a 
-        structured dictionary for the Jinja2 templates.
-        """
         try:
             transformed = {
                 "rilevatore_id": row.get("Rilevatore"),
                 "name": str(row.get("Nome Rilevatore", "")).title(),
-                "email": row.get("Email", "").strip().lower(),
+                "email": str(row.get("Email", "")).strip().lower(),
                 "regione": row.get("Regione", "N/A"),
                 "report_type": report_type.upper(),
-                "metrics": {}
+                "metrics": {
+                    "nazionale": {},
+                    "regionale": {}
+                }
             }
 
-            mapping = self.fol_mapping 
+            mapping = self.fol_mapping if "FOL" in report_type.upper() else self.spese_mapping 
             
             transformed["metrics"]["nazionale"] = {
                 "completezza": row.get(mapping["nazionale"]["completezza"], "0%"),
@@ -52,13 +59,10 @@ class DataTransformer:
             return transformed
 
         except Exception as e:
-            logging.error(f"Error transforming row for {row.get('Email')}: {e}")
+            logging.error(f"Error transforming row: {e}")
             return None
 
     def process_batch(self, dataframe, report_type="FOL"):
-        """
-        Converts an entire dataframe into a list of clean, email-ready dictionaries.
-        """
         raw_records = dataframe.to_dict(orient="records")
         clean_records = []
 
