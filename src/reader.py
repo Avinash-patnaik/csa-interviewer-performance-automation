@@ -19,7 +19,7 @@ def load_data(file_path):
 
         df.columns = df.columns.str.strip()
 
-        df = df.dropna(how='all')  # Drop rows where all elements are NaN
+        df = df.dropna(how='all') 
 
         logging.info(f"Data after cleaning has shape {df.shape}")
 

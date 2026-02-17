@@ -37,13 +37,10 @@ def process_files(directory, file_prefix, report_type):
         
         df = load_data(file_path)
         
-        # 4. VALIDATE: Ensure emails and data are clean [cite: 5, 6]
         valid_rows = validator.filter_valid_data(df)
         
-        # 5. TRANSFORM: Prepare metrics for the specific report type [cite: 4]
         clean_records = transformer.process_batch(valid_rows, report_type)
-        
-        # 6. MAIL: Send using templates 
+
         template = "fol_report.html" if report_type == "FOL" else "spese_report.html"
         
         for record in clean_records:
