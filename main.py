@@ -30,7 +30,7 @@ def process_files(directory, file_prefix, report_type):
         valid_rows = validator.filter_valid_data(df)
         clean_records = transformer.process_batch(pd.DataFrame(valid_rows), report_type)
 
-        template = "fol_report.html" if "FOL" in report_type.upper() else "spese_report.html"
+        template = "folcapi_report.html" if "FOL" in report_type.upper() else "spese_report.html"
 
         for record in clean_records:
             success = mailer.send_performance_email(record['email'], template, {'user': record})

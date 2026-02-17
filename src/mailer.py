@@ -1,4 +1,5 @@
 import smtplib
+import os
 from email.message import EmailMessage
 from jinja2 import Environment, FileSystemLoader
 import logging
@@ -6,7 +7,8 @@ import logging
 class Mailer:
     def __init__(self, config):
         self.config = config['smtp_auth']
-        self.env = Environment(loader=FileSystemLoader('templates'))
+        template_dir = os.path.join(os.getcwd(), 'templates')
+        self.env = Environment(loader=FileSystemLoader(template_dir))
 
     def send_performance_email(self, recipient, template_name, context):
         try:
