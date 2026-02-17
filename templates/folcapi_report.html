@@ -1,38 +1,20 @@
-<html>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-    <p>Gentile <strong>{{ name }}</strong>,</p>
-    
-    <p>di seguito riportiamo gli indicatori di performance da lei fatti registrare nel corso del 4° trimestre 2025:</p>
-    
-    <ul>
-        <li>Tasso di completezza = <strong>{{ completezza }}</strong></li>
-        <li>Tasso di completezza nelle prime due settimana di rilevazione = <strong>{{ completezza_2sett }}</strong></li>
-        <li>Tasso di inserimento del numero di telefono = <strong>{{ telefono }}</strong></li>
-    </ul>
+<h3>Report Performance: {{ user.name }}</h3>
+<p>Dettagli per la Regione: {{ user.regione }}</p>
 
-    <p>I corrispondenti valori registrati a livello <strong>NAZIONALE</strong> sono:<br>
-    Tasso di completezza = 91%<br>
-    Tasso di completezza nelle prime due settimana di rilevazione = 60%<br>
-    Tasso di inserimento del numero di telefono = 73%</p>
-
-    <p>I corrispondenti valori registrati nella sua <strong>REGIONE</strong> sono:<br>
-    Tasso di completezza = {{ reg_completezza }}<br>
-    Tasso di completezza nelle prime due settimana di rilevazione = {{ reg_completezza_2sett }}<br>
-    Tasso di inserimento del numero di telefono = {{ reg_telefono }}</p>
-
-    <p>Le ricordiamo che gli <strong>OBIETTIVI</strong> di riferimento sono i seguenti:<br>
-    Tasso di completezza = 95%<br>
-    Tasso di completezza nelle prime due settimana di rilevazione = 80%<br>
-    Tasso di inserimento del numero di telefono = 90%</p>
-
-    <p>Cordiali saluti,<br>Il Team CSA</p>
-
-    <hr>
-    <p style="font-size: 0.8em; color: #666;">
-        <strong>Legenda – Descrizione degli indicatori</strong><br>
-        <em>Tasso di completezza:</em> percentuale di interviste realizzate sul totale delle famiglie assegnate<br>
-        <em>Tasso di completezza nelle prime due settimane:</em> percentuale di interviste realizzate nelle prime due settimane sul totale delle famiglie intervistate<br>
-        <em>Tasso di inserimento del numero di telefono:</em> percentuale di recapiti telefonici validi inseriti sul totale delle famiglie intervistate
-    </p>
-</body>
-</html>
+<table border="1">
+    <tr>
+        <th>Metrica</th>
+        <th>Valore Nazionale</th>
+        <th>Valore Regionale</th>
+    </tr>
+    <tr>
+        <td>Completezza Complessiva</td>
+        <td>{{ user.metrics.nazionale.completezza }}</td>
+        <td>{{ user.metrics.regionale.completezza }}</td>
+    </tr>
+    <tr>
+        <td>Prime Due Settimane</td>
+        <td>{{ user.metrics.nazionale.due_settimane }}</td>
+        <td>{{ user.metrics.regionale.due_settimane }}</td>
+    </tr>
+</table>
