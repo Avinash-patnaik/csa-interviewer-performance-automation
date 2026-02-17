@@ -27,7 +27,20 @@ class DataTransformer:
                 "recapiti": "% Recapiti Regionali Spese"
             }
         }
-
+    def format_pct(self, value):
+        try:
+            if value is None or str(value).lower() == 'nan':
+                return "0%"
+            
+            if isinstance(value, (float, int)):
+                if value <= 1.0:
+                    return f"{round(value * 100, 1)}%"
+                return f"{round(value, 1)}%"
+            
+            return str(value)
+        except:
+            return str(value)
+        
     def transform_row(self, row, report_type="FOL"):
         try:
             transformed = {
