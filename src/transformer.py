@@ -1,83 +1,61 @@
 import logging
+import pandas as pd
 
 class DataTransformer:
-    def __init__(self):
-        self.fol_mapping = {
-            "nazionale": {
-                "completezza": "Tasso di completezza complessivo",
-                "due_settimane": "Tasso completezza interviste complete nelle prime due settimane",
-                "recapiti": "% Recapiti telefonici inseriti"
-            },
-            "regionale": {
-                "completezza": "% Tasso di completezza complessivo FOL",
-                "due_settimane": "% Tasso  di completezza prime due settimane FOL",
-                "recapiti": "% Recapiti telefonici inseriti FOL"
-            }
-        }
-        
-        self.spese_mapping = {
-            "nazionale": {
-                "completezza": "Tasso Complessivo Spese",
-                "due_settimane": "Tasso Prime 2 Settimane Spese",
-                "recapiti": "% Recapiti Spese"
-            },
-            "regionale": {
-                "completezza": "% Tasso Regionale Spese",
-                "due_settimane": "% Tasso Regionale 2 Settimane",
-                "recapiti": "% Recapiti Regionali Spese"
-            }
-        }
-
     def format_pct(self, value):
         try:
-            if value is None or str(value).lower() == 'nan':
-                return "0%"
+            if pd.isna(value) or str(value).lower() in ['nan', 'none', '']:
+                return "0,0%"
             if isinstance(value, (float, int)):
-                if value <= 1.0:
-                    return f"{round(value * 100, 1)}%"
-                return f"{round(value, 1)}%"
-            return str(value)
+                val = value * 100 if -1.0 <= value <= 1.0 else value
+                return f"{round(val, 1)}%".replace('.', ',')
+            return str(value).strip()
         except:
-            return str(value)
+            return "0,0%"
 
     def transform_row(self, row, report_type="FOL"):
         try:
+            values = list(row.values())
+            email_idx = 6 
+            is_fol = "FOL" in str(report_type).upper()
+
+            rilevatore_id = str(values[0]) if len(values) > 0 else "N/D"
+            nome = str(values[1]).title() if len(values) > 1 else "Rilevatore"
+            periodo = str(values[3]) if len(values) > 3 else "N/D"
+            anno = str(values[4]) if len(values) > 4 else "N/D"
+
+            def get_block(start_offset):
+                idx_list = [email_idx + start_offset, 
+                            email_idx + start_offset + 1, 
+                            email_idx + start_offset + 2]
+                vals = []
+                for idx in idx_list:
+                    if idx < len(values):
+                        vals.append(self.format_pct(values[idx]))
+                    else:
+                        vals.append("0,0%")
+                return vals if is_fol else [vals[0], vals[2]]
+
             transformed = {
-                "rilevatore_id": row.get("Rilevatore"),
-                "name": str(row.get("Nome Rilevatore", "")).title(),
-                "email": str(row.get("Email", "")).strip().lower(),
-                "regione": row.get("Regione", "N/A"),
-                "periodo": row.get("periodo", "N/D"),
-                "anno": row.get("Anno", "N/D"),
-                "report_type": report_type.upper(),
-                "metrics": {"nazionale": {}, "regionale": {}}
+                "rilevatore_id": rilevatore_id,
+                "name": nome,
+                "email": str(values[email_idx]).strip().lower(),
+                "regione": str(row.get("Regione", "N/A")).upper(),
+                "periodo": periodo,
+                "anno": anno,
+                "report_type": "Forze di Lavoro" if is_fol else "Spese",
+                "is_fol": is_fol,
+                "metrics": {
+                    "personali": get_block(1),
+                    "regione": get_block(4),
+                    "italia": get_block(7)
+                }
             }
-
-            mapping = self.fol_mapping if "FOL" in report_type.upper() else self.spese_mapping 
-            
-            transformed["metrics"]["nazionale"] = {
-                "completezza": self.format_pct(row.get(mapping["nazionale"]["completezza"])),
-                "due_settimane": self.format_pct(row.get(mapping["nazionale"]["due_settimane"])),
-                "recapiti": self.format_pct(row.get(mapping["nazionale"]["recapiti"]))
-            }
-
-            transformed["metrics"]["regionale"] = {
-                "completezza": self.format_pct(row.get(mapping["regionale"]["completezza"])),
-                "due_settimane": self.format_pct(row.get(mapping["regionale"]["due_settimane"])),
-                "recapiti": self.format_pct(row.get(mapping["regionale"]["recapiti"]))
-            }
-
             return transformed
-
         except Exception as e:
-            logging.error(f"Error transforming row: {e}")
+            logging.error(f"Error: {e}")
             return None
 
     def process_batch(self, dataframe, report_type="FOL"):
-        raw_records = dataframe.to_dict(orient="records")
-        clean_records = []
-        for record in raw_records:
-            clean_data = self.transform_row(record, report_type)
-            if clean_data:
-                clean_records.append(clean_data)
-        return clean_records
+        records = dataframe.to_dict(orient="records")
+        return [self.transform_row(r, report_type) for r in records if self.transform_row(r, report_type)]

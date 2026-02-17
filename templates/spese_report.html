@@ -1,94 +1,81 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
-        .header { background-color: #004a99; color: white; padding: 30px; text-align: center; }
-        .logo { max-width: 150px; margin-bottom: 15px; }
-        .content { padding: 30px; max-width: 800px; margin: auto; }
-        .container-table { width: 100%; border-spacing: 15px; border-collapse: separate; }
-        .card { 
-            width: 50%; 
-            border: 1px solid #ddd; 
-            border-radius: 8px; 
-            padding: 20px;
-            background-color: #f9f9f9;
-            vertical-align: top;
-        }
-        .section-title { 
-            color: #004a99; 
-            border-bottom: 2px solid #004a99; 
-            padding-bottom: 8px; 
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            font-size: 13px;
-            font-weight: bold;
-        }
-        .metrics-table { width: 100%; border-collapse: collapse; }
-        .metrics-table td { padding: 12px 0; border-bottom: 1px solid #eee; }
-        .label { font-size: 13px; color: #555; }
-        .value { text-align: right; color: #004a99; font-weight: bold; font-size: 15px; }
-        .footer { font-size: 11px; color: #777; margin-top: 40px; text-align: center; border-top: 1px solid #eee; padding-top: 20px; }
-        .time-ref { color: #666; font-style: italic; margin-top: -10px; margin-bottom: 20px; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #2d3436; margin: 0; padding: 0; background-color: #f0f2f5; }
+        .wrapper { width: 100%; padding: 20px 0; }
+        .header { background-color: #ffffff; padding: 35px 20px; text-align: center; border-bottom: 4px solid #004a99; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo { max-width: 180px; height: auto; }
+        .container { max-width: 700px; margin: 30px auto; padding: 0 20px; }
+        .welcome-card { background: #ffffff; border-radius: 12px; padding: 30px; margin-bottom: 25px; border-left: 6px solid #004a99; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .welcome-text { font-size: 20px; color: #2d3436; margin: 0; }
+        .badge-group { margin-top: 15px; }
+        .badge { display: inline-block; background: #eef2f7; color: #004a99; padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 700; margin-right: 8px; border: 1px solid #d1d9e6; }
+        .card { background: #ffffff; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #e1e8ed; }
+        .section-title { font-size: 14px; font-weight: 800; color: #004a99; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 20px; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; display: block; }
+        .metric-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f8f9fa; }
+        .metric-item:last-child { border-bottom: none; }
+        .metric-label { font-size: 14px; color: #636e72; padding-right: 15px; }
+        .metric-value { font-size: 18px; font-weight: 700; color: #004a99; white-space: nowrap; }
+        .legend-section { background: #dfe6e9; border-radius: 12px; padding: 25px; font-size: 13px; color: #2d3436; margin-top: 35px; border-left: 6px solid #636e72; }
+        .legend-title { font-weight: 800; text-transform: uppercase; margin-bottom: 15px; color: #2d3436; display: block; font-size: 12px; }
+        .legend-item { margin-bottom: 10px; line-height: 1.5; }
+        .footer { text-align: center; padding: 40px 20px; font-size: 12px; color: #b2bec3; letter-spacing: 0.5px; }
+        .highlight-text { color: #004a99; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="header">
-        {% if logo_base64 %}
-            <img src="{{ logo_base64 }}" alt="Logo" class="logo">
-        {% endif %}
-        <h1 style="margin:0;">Rapporto Performance Rilevatore</h1>
-        <p style="margin:5px 0 0 0;">Indagine: {{ user.report_type }}</p>
-    </div>
+    <div class="wrapper">
+        <div class="header">
+            {% if logo_base64 %}<img src="{{ logo_base64 }}" alt="CSA Research" class="logo">{% endif %}
+        </div>
 
-    <div class="content">
-        <p>Gentile <strong>{{ user.name }}</strong> (ID: {{ user.rilevatore_id }}),</p>
-        <p>Di seguito sono riportati i tuoi indicatori di performance aggiornati per la regione: <strong>{{ user.regione }}</strong>.</p>
-        <p class="time-ref">Riferimento temporale: <strong>{{ user.periodo }} {{ user.anno }}</strong></p>
+        <div class="container">
+            <div class="welcome-card">
+                <p class="welcome-text">Gentile <span class="highlight-text">{{ user.name }}</span> (ID: {{ user.rilevatore_id }}),</p>
+                <div class="badge-group">
+                    <span class="badge">📍 {{ user.regione }}</span>
+                    <span class="badge">📅 {{ user.periodo }} {{ user.anno }}</span>
+                </div>
+                <p style="margin-top: 20px; font-size: 15px; color: #636e72;">
+                    di seguito riportiamo gli indicatori di performance da lei fatti registrati.
+                </p>
+            </div>
 
-        <table class="container-table">
-            <tr>
-                <td class="card">
-                    <div class="section-title">Medie Nazionali</div>
-                    <table class="metrics-table">
-                        <tr>
-                            <td class="label">Completezza Complessiva</td>
-                            <td class="value">{{ user.metrics.nazionale.completezza }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Prime 2 Settimane</td>
-                            <td class="value">{{ user.metrics.nazionale.due_settimane }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Recapiti Inseriti</td>
-                            <td class="value">{{ user.metrics.nazionale.recapiti }}</td>
-                        </tr>
-                    </table>
-                </td>
+            {% set sections = [
+                {'title': 'INDICATORI PERSONALI', 'data': user.metrics.personali, 'icon': '👤'},
+                {'title': 'INDICATORI REGIONE', 'data': user.metrics.regione, 'icon': '🏙️'},
+                {'title': 'INDICATORI TOTALE ITALIA', 'data': user.metrics.italia, 'icon': '🇮🇹'}
+            ] %}
 
-                <td class="card">
-                    <div class="section-title">Performance Regionale</div>
-                    <table class="metrics-table">
-                        <tr>
-                            <td class="label">Completezza Regionale</td>
-                            <td class="value">{{ user.metrics.regionale.completezza }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Prime 2 Settimane</td>
-                            <td class="value">{{ user.metrics.regionale.due_settimane }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Recapiti Regionali</td>
-                            <td class="value">{{ user.metrics.regionale.recapiti }}</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
+            {% for section in sections %}
+                <div class="card">
+                    <span class="section-title">{{ section.icon }} {{ section.title }}</span>
+                    
+                    <div class="metric-item">
+                        <span class="metric-label">Tasso di completezza </span>
+                        <span class="metric-value">{{ section.data[0] }}</span>
+                    </div>
 
-        <div class="footer">
-            <p>Questa è una comunicazione automatica inviata dal sistema CSA Research.</p>
-            <p>&copy; 2026 CSA Research per ISTAT</p>
+                    <div class="metric-item">
+                        <span class="metric-label">Tasso di inserimento del numero di telefono </span>
+                        <span class="metric-value">{{ section.data[1] }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="legend-section">
+                <span class="legend-title">Legenda – Descrizione degli indicatori</span>
+                <div class="legend-item"><strong>Tasso di completezza:</strong> percentuale di interviste realizzate sul totale delle famiglie assegnate</div>
+                <div class="legend-item"><strong>Tasso di inserimento del numero di telefono:</strong> percentuale di recapiti telefonici validi (fissi o mobili) inseriti sul totale delle famiglie intervistate nella prima wave di quartina</div>
+            </div>
+
+            <div class="footer">
+                <p>Questa è una comunicazione automatica inviata dal sistema CSA Research.<br>
+                &copy; 2026 CSA Research per ISTAT</p>
+            </div>
         </div>
     </div>
 </body>
