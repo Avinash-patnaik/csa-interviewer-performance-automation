@@ -7,7 +7,6 @@ from src.validator import DataValidator
 from src.transformer import DataTransformer
 from src.mailer import Mailer
 
-# Initialize Logging for the logic layer 
 logging.basicConfig(
     filename='logs/execution.log',
     level=logging.INFO,

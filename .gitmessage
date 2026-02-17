@@ -19,9 +19,4 @@ type(scope): <subject>
 #   src       : The Engine (reader, transformer, mailer, validator) [cite: 4]
 #   tests     : Unit tests for reader or transformer [cite: 5]
 #   main      : The Orchestrator / Entry point [cite: 5]
-
-# Guidelines:
-#   - Use the imperative, present tense: "change" not "changed"
-#   - Don't capitalize the first letter
-#   - No dot (.) at the end
 # ---------------------------------------------------------
