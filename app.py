@@ -13,7 +13,7 @@ campaign_type = st.radio(
     ("FOLCAPI", "SPESE"),
     help="This determines which files are scanned and which email template is used."
 )
- 
+
 raw_path = "data/raw/"
 
 if st.button(f"Run {campaign_type} Pipeline"):
