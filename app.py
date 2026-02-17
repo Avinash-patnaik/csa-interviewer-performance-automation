@@ -1,15 +1,28 @@
 import streamlit as st
 import os
-from main import process_files  # Importing the orchestrator logic
+from PIL import Image
+from main import process_files  
 
 
 st.set_page_config(page_title="CSA Mailer Control Center", page_icon="📧")
 
-st.title("🚀 CSA Interviewer Performance Automation")
-st.markdown("Select the campaign type to process files from their specific folders.")
+LOGO_PATH = os.path.join(os.getcwd(), "CSA-RESEARCH.png")
+
+col1, col2 = st.columns([0.1, 0.9])
+
+with col1:
+    if os.path.exists(LOGO_PATH):
+        logo_img = Image.open(LOGO_PATH)
+        st.image(logo_img, width=100)
+    else:
+        st.write("🏢") # Fallback if logo is missing
+
+with col2:
+    st.title("CSA Interviewer Performance Automation")
+st.markdown("Select the survey type to process files from their specific folders.")
 
 campaign_type = st.radio(
-    "Select Campaign Type:",
+    "Select Survey Type:",
     ("FOLCAPI", "SPESE"),
     help="FOL files are read from data/folcapi/ and SPESE from data/spese/"
 )
