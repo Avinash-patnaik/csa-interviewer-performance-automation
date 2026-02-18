@@ -24,3 +24,5 @@ def load_config():
     }
     
     return settings
+
+config = load_config()
