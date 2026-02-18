@@ -55,7 +55,7 @@ def process_files(directory, file_prefix, report_type):
     mailer = Mailer(config)
     
     # Select template dynamically based on report_type
-    template_name = "fol_report.html" if "FOL" in report_type.upper() else "spese_report.html"
+    template_name = "folcapi_report.html" if "FOL" in report_type.upper() else "spese_report.html"
 
     for input_file in unprocessed_files:
         filename = os.path.basename(input_file)
