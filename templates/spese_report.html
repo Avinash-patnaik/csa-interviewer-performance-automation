@@ -27,10 +27,11 @@
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <div class="header">
-            {% if logo_base64 %}<img src="{{ logo_base64 }}" alt="CSA Research" class="logo">{% endif %}
-        </div>
+    <div class="header" style="text-align: center;">
+        {% if logo_cid %}
+            <img src="cid:{{ logo_cid }}" alt="CSA Research" class="logo" width="180" style="display: block; margin: 0 auto;">
+        {% endif %}
+    </div>
 
         <div class="container">
             <div class="welcome-card">
