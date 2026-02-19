@@ -106,7 +106,7 @@ st.markdown(
         font-size: 8px !important;
         line-height: 1.3 !important;
         /* Classic terminal font stack */
-        font-family: 'Consolas', 'Monaco', 'Lucida Console', 'Courier New', monospace !important;
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
         font-weight: 400 !important; /* Forces non-bold */
         letter-spacing: 0.5px !important;
     }
