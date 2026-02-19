@@ -15,15 +15,36 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    [data-testid="stHorizontalBlock"] {
-        align-items: center !important;
+    /* Center the main container */
+    .header-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        margin-top: -50px; /* Adjust top padding */
     }
+    
+    .logo-img {
+        margin-bottom: 20px;
+    }
+
+    .thick-blue-line {
+        height: 8px; /* Extra thick */
+        background-color: #004a99;
+        width: 100%; /* Line spans 100% of the screen width */
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
     .main-title {
-        margin-bottom: 0px;
-        padding-top: 0px;
-        font-weight: 700;
+        font-weight: 800;
         color: #004a99;
+        font-size: 3rem;
+        letter-spacing: -1px;
     }
+    
+    /* Standard Streamlit adjustments */
     .stRadio > label {
         font-weight: bold;
     }
@@ -32,19 +53,18 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Header Section
 LOGO_PATH = os.path.join(os.getcwd(), "CSA-RESEARCH.png")
-col1, col2 = st.columns([0.1, 0.9])
 
-with col1:
-    if os.path.exists(LOGO_PATH):
-        st.image(LOGO_PATH, width=90)
-    else:
-        st.write("🏢")
+st.markdown('<div class="header-container">', unsafe_allow_html=True)
+if os.path.exists(LOGO_PATH):
+    st.image(LOGO_PATH, width=300) 
+else:
+    st.markdown("## 🏢 CSA RESEARCH")
 
-with col2:
-    st.markdown("<h1 class='main-title'>CSA Interviewer Performance Automation</h1>", unsafe_allow_html=True)
+st.markdown('<div class="thick-blue-line"></div>', unsafe_allow_html=True)
+st.markdown("<h1 class='main-title'>CSA Interviewer Performance Automation</h1>", unsafe_allow_html=True)
 
+st.markdown('</div>', unsafe_allow_html=True)
 st.markdown("---")
 
 # Pipeline Selection Layer
