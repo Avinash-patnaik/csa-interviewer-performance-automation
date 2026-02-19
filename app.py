@@ -3,10 +3,12 @@ import os
 import logging
 from main import process_files
 
+ICON_PATH = os.path.join(os.getcwd(), "csa-logo.ico")
+
 # Page Configuration
 st.set_page_config(
     page_title="CSA Mailer Control Center", 
-    page_icon="📧", 
+    page_icon=ICON_PATH if os.path.exists(ICON_PATH) else "📧", 
     layout="wide"
 )
 
