@@ -107,7 +107,7 @@ if os.path.exists(log_file):
 else:
     st.info("No logs found. Execution history will appear here after the first run.")
 
-# 7. Footer
+# Footer
 st.markdown(
     """
     <div style='text-align: center; color: #b2bec3; padding-top: 50px;'>
