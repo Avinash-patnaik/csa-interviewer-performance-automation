@@ -23,6 +23,6 @@ The project follows a modular "Engine" architecture to ensure maintainability:
 
 ### 2. Installation
 ```bash
-git clone <repository-url>
+git clone <https://github.com/Avinash-patnaik/csa-interviewer-performance-automation.git>
 cd csa-interviewer-performance-automation
 pip install -r requirements.txt
