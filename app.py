@@ -167,7 +167,7 @@ st.divider()
 
 # Survey Selection 
 with st.container(border=True):
-    st.markdown("### 🛠️Survey Selection")
+    st.markdown("### 🛠️SURVEY SELECTION")
     survey_type = st.radio("Choose Type:", ("FOLCAPI", "SPESE"))
     
     # path mapping 
