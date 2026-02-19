@@ -1,7 +1,7 @@
-# CSA Interviewer Performance Automation (CIPA)
+# CSA - Sistema di Indicatori di Performance per i Rilevatori (RPI - Rilevatori Performance Indicatori)
 
 ## 📋 Overview
-CIPA is an automated data pipeline designed to ingest quarterly performance metrics for field interviewers (Rilevatori), process key performance indicators (KPIs), and distribute personalized HTML reports via SMTP.
+RPI is an automated data pipeline designed to ingest quarterly performance metrics for field interviewers (Rilevatori), process key performance indicators (KPIs), and distribute personalized HTML reports via SMTP.
 
 The system supports two primary survey streams:
 * **FOL** (Forze di Lavoro)
