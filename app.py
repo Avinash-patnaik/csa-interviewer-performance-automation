@@ -226,5 +226,5 @@ with st.container(border=True):
         st.info("No logs found in logs/ directory.") 
 st.markdown('</div>', unsafe_allow_html=True)
 
-if st.button("🔄 Refresh Logs"):
+if st.button("🔄 Refresh"):
     st.rerun()
