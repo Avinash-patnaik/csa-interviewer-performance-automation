@@ -160,7 +160,7 @@ st.markdown('<div class="header-container">', unsafe_allow_html=True)
 if os.path.exists(LOGO_PATH):
     st.image(LOGO_PATH, width=450)
 st.markdown('<div class="thick-blue-line"></div>', unsafe_allow_html=True)
-st.markdown("<h1 class='main-title'>CSA Interviewer Performance Automation</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='main-title'>CSA - Sistema di Indicatori di Performance per i Rilevatori</h1>", unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
 st.divider()
