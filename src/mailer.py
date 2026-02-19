@@ -55,7 +55,7 @@ class Mailer:
                 server.login(self.config['user'], self.config['pass'])
                 server.send_message(msg)
             
-            logging.info(f"Email inviata con successo a: {recipient}") 
+            logging.info(f"✅Email inviata con successo a: {recipient}") 
             return True
 
         except Exception as e:
