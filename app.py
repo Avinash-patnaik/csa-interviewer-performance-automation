@@ -158,7 +158,7 @@ st.markdown(
 LOGO_PATH = os.path.join(os.getcwd(), "CSA-RESEARCH.png")
 st.markdown('<div class="header-container">', unsafe_allow_html=True)
 if os.path.exists(LOGO_PATH):
-    st.image(LOGO_PATH, width=450)
+    st.image(LOGO_PATH, width=350)
 st.markdown('<div class="thick-blue-line"></div>', unsafe_allow_html=True)
 st.markdown("<h1 class='main-title'>CSA – Performance Rilevatori: Sistema di Invio Automatico</h1>", unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
