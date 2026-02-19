@@ -2,7 +2,7 @@ import streamlit as st
 import os
 from main import process_files
 
-# 1. Page Configuration
+# Page Configuration
 ICON_PATH = os.path.join(os.getcwd(), "csa-logo.ico")
 st.set_page_config(
     page_title="CSA Mailer Control Center", 
@@ -10,7 +10,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# 2. Comprehensive CSS Styling
 st.markdown(
     """
     <style>
@@ -70,8 +69,30 @@ st.markdown(
     .main-title { font-weight: 800; color: #004a99 !important; font-size: 3rem; margin-bottom: 0px !important; }
     
     hr { margin-top: 5px !important; margin-bottom: 10px !important; }
+    .monitoring-flex-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start; /* Aligns items to the left */
+        align-items: center;
+        gap: 40px; /* Space between the items */
+        background-color: #E0E0E0;
+        padding: 15px 25px;
+        border-radius: 8px;
+        border-left: 8px solid #004a99;
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 13px;
+        width: 100%;
+    }
 
-    /* LOG TERMINAL STYLING - REDUCED FONT SIZE */
+    .monitoring-item {
+        white-space: nowrap; /* Prevents text from wrapping to a new line */
+    }
+
+    .monitoring-label {
+        color: #004a99;
+        font-weight: bold;
+        margin-right: 5px;
+    }
     .log-container-box {
         background-color: #0A0A0A !important;
         border: 2px solid #333333;
@@ -79,20 +100,39 @@ st.markdown(
         padding: 15px;
         height: 250px;
         overflow-y: auto;
+
+    #log-section .log-container-box, 
+    #log-section .log-container-box * {
+        font-size: 8px !important;
+        line-height: 1.3 !important;
+        /* Classic terminal font stack */
+        font-family: 'Consolas', 'Monaco', 'Lucida Console', 'Courier New', monospace !important;
+        font-weight: 400 !important; /* Forces non-bold */
+        letter-spacing: 0.5px !important;
     }
+
+    .log-container-box {
+        background-color: #0A0A0A !important;
+        border: 2px solid #333333 !important;
+        border-radius: 8px !important;
+        padding: 12px !important;
+        height: 250px !important;
+        overflow-y: auto !important;
+    }
+
     .log-row {
         color: #00FF41 !important; 
-        font-family: 'Courier New', monospace !important;
-        font-size: 08px !important; 
         margin: 0 !important;
         padding: 1px 0 !important;
-        border-bottom: 1px solid #1A1A1A;
-        white-space: pre-wrap;
+        display: block !important;
+        border-bottom: 1px solid #1A1A1A !important;
+        white-space: pre !important;
+        font-weight: 300 !important; 
     }
     .folder-info-box {
-        display: flex; /* Aligns children horizontally */
-        flex-wrap: wrap; /* Allows wrapping on smaller screens */
-        justify-content: space-between; /* Spreads items out evenly */
+        display: flex; 
+        flex-wrap: wrap; 
+        justify-content: space-between; 
         background-color: #E0E0E0;
         padding: 15px;
         border-radius: 8px;
@@ -103,18 +143,18 @@ st.markdown(
     }
 
     .info-item {
-        margin-right: 20px; /* Adds horizontal space between segments */
+        margin-right: 20px; 
     }
 
     .info-item:last-child {
-        margin-right: 0; /* Removes margin from the last item */
+        margin-right: 20px; 
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# 3. Header Section
+# Header Section
 LOGO_PATH = os.path.join(os.getcwd(), "CSA-RESEARCH.png")
 st.markdown('<div class="header-container">', unsafe_allow_html=True)
 if os.path.exists(LOGO_PATH):
@@ -125,25 +165,23 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 st.divider()
 
-# 4. Survey Selection (Full Width Top Container)
+# Survey Selection 
 with st.container(border=True):
     st.markdown("### 🛠️Survey Selection")
     survey_type = st.radio("Choose Type:", ("FOLCAPI", "SPESE"))
     
-    # Logic Layer path mapping 
+    # path mapping 
     target_dir = os.path.join("data", "folcapi") if survey_type == "FOLCAPI" else os.path.join("data", "spese")
     file_prefix = "FOL" if survey_type == "FOLCAPI" else "SPESE"
 
-# 5. Pipeline & Monitoring (Exactly 50/50 Split)
-col1, col2 = st.columns([0.3, 1], gap="medium")
+col1, col2 = st.columns([0.4, 1], gap="medium")
 
 with col1:
     with st.container(border=True):
-        st.markdown(f"### 🚀{survey_type} Pipeline")
+        st.markdown(f"### 🚀{survey_type} PIPELINE")
         if st.button(f"Run {survey_type} Pipeline"):
             with st.status("Processing...", expanded=True) as status:
-                try:
-                    # Orchestrator call 
+                try: 
                     process_files(directory=target_dir, file_prefix=file_prefix, report_type=file_prefix)
                     status.update(label="Complete!", state="complete")
                     st.balloons()
@@ -154,29 +192,39 @@ with col2:
     with st.container(border=True):
         st.markdown("### 🔍 Monitoring Path")
         st.markdown(
-            f"""<div class='folder-info-box'>
-                <div class='info-item'><b>STATUS:</b> ACTIVE MONITORING</div>
-                <div class='info-item'><b>PATH:</b> /{target_dir}</div>
-                <div class='info-item'><b>FILTER:</b> {file_prefix}*.xlsx</div>
-            </div>""", 
+            f"""
+            <div class="monitoring-flex-container">
+                <div class="monitoring-item">
+                    <span class="monitoring-label">STATUS:</span> ACTIVE
+                </div>
+                <div class="monitoring-item">
+                    <span class="monitoring-label">PATH:</span> /{target_dir}
+                </div>
+                <div class="monitoring-item">
+                    <span class="monitoring-label">FILTER:</span> {file_prefix}*.xlsx
+                </div>
+            </div>
+            """, 
             unsafe_allow_html=True
         )
-
-# 6. Execution Logs (Full Width Bottom Container)
+st.markdown('<div id="log-section">', unsafe_allow_html=True)
 with st.container(border=True):
     st.subheader("📊 Recent Execution Logs")
-    log_path = os.path.join("logs", "execution.log")
+    log_path = os.path.join("logs", "execution.log") 
     
-    if os.path.exists(log_path):
+    if os.path.exists(log_path): 
         with open(log_path, "r", encoding="utf-8") as f:
-            log_lines = f.readlines()[-20:]
+            log_lines = f.readlines()[-25:] 
+            
             log_html = '<div class="log-container-box">'
             for line in log_lines:
-                log_html += f'<p class="log-row">{line.strip()}</p>'
+                log_html += f'<div class="log-row">{line.strip()}</div>'
             log_html += '</div>'
+            
             st.markdown(log_html, unsafe_allow_html=True)
     else:
-        st.info("No logs found in logs/ history.")
+        st.info("No logs found in logs/ directory.") 
+st.markdown('</div>', unsafe_allow_html=True)
 
 if st.button("🔄 Refresh Logs"):
     st.rerun()
