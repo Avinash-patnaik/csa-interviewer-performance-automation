@@ -168,7 +168,7 @@ st.divider()
 # Survey Selection 
 with st.container(border=True):
     st.markdown("### 🛠️SURVEY SELECTION")
-    survey_type = st.radio("Choose Type:", ("FOLCAPI", "SPESE"))
+    survey_type = st.radio("Choose Survey Type:", ("FOLCAPI", "SPESE"))
     
     # path mapping 
     target_dir = os.path.join("data", "folcapi") if survey_type == "FOLCAPI" else os.path.join("data", "spese")
