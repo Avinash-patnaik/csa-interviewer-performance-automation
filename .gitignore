@@ -1,6 +1,7 @@
 
 .env
 config/settings.yaml
+config/
 
 data/
 logs/
