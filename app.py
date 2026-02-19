@@ -3,14 +3,13 @@ import os
 import logging
 from main import process_files
 
-# 1. Page Configuration
+# Page Configuration
 st.set_page_config(
     page_title="CSA Mailer Control Center", 
     page_icon="📧", 
     layout="wide"
 )
 
-# 2. Custom CSS for Senior Look & Feel
 st.markdown(
     """
     <style>
@@ -31,7 +30,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# 3. Header Section
+# Header Section
 LOGO_PATH = os.path.join(os.getcwd(), "CSA-RESEARCH.png")
 col1, col2 = st.columns([0.1, 0.9])
 
@@ -46,8 +45,7 @@ with col2:
 
 st.markdown("---")
 
-# 4. Pipeline Selection Logic
-# Using the project structure from sources: data/raw/ containing folcapi and spese 
+# Pipeline Selection Layer
 survey_type = st.radio(
     "Select Survey Type:",
     ("FOLCAPI", "SPESE"),
@@ -64,7 +62,7 @@ else:
     file_prefix = "SPESE"
     report_label = "Spese delle Famiglie (SPESE)"
 
-# 5. Execution Section
+# Execution Section
 st.subheader(f"Pipeline Management: {report_label}")
 col_btn, col_info = st.columns([0.3, 0.7])
 
@@ -79,7 +77,6 @@ if run_pressed:
         st.write(f"🔍 Scanning directory for new files...")
         
         try:
-            # Executes logic layer: reader, transformer, mailer, and archiver [cite: 4, 5]
             process_files(
                 directory=target_dir, 
                 file_prefix=file_prefix, 
@@ -94,11 +91,10 @@ if run_pressed:
             st.error(f"Pipeline Failed: {str(e)}")
             status.update(label="Error Occurred", state="error")
 
-# 6. Logging & Audit Trail Section
+# Logging & Audit Trail Section
 st.divider()
 st.subheader("📊 Recent Execution Logs")
 
-# Logs folder identified in project structure [cite: 3]
 log_file = "logs/execution.log"
 
 if os.path.exists(log_file):
