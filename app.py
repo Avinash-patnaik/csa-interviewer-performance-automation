@@ -21,12 +21,10 @@ st.markdown(
         padding-bottom: 0rem !important;
     }
 
-    /* Global Text: Pure Black */
     html, body, [class*="st-"], p, h1, h2, h3, label, span {
         color: #000000 !important;
     }
 
-    /* Survey Selection Text Sizes */
     [data-testid="stWidgetLabel"] p {
         font-size: 24px !important;
         font-weight: 800 !important;
@@ -38,7 +36,6 @@ st.markdown(
         font-weight: 700 !important;
     }
 
-    /* Containers: Grey with PURE BLACK Border */
     div[data-testid="stVerticalBlockBorderWrapper"] {
         background-color: #F5F5F5 !important; 
         border: 2px solid #000000 !important;
@@ -47,7 +44,6 @@ st.markdown(
         min-height: 160px; 
     }
 
-    /* TOGGLE COLOR EFFECT FOR BUTTON */
     div.stButton > button {
         background-color: #ADD8E6 !important;
         color: #000000 !important;
@@ -63,7 +59,6 @@ st.markdown(
         border: 2px solid #000000 !important;
     }
 
-    /* Branding */
     .header-container { display: flex; flex-direction: column; align-items: center; text-align: center; }
     .thick-blue-line { height: 10px; background-color: #004a99; width: 100%; border-radius: 10px; margin: 5px 0; }
     .main-title { font-weight: 800; color: #004a99 !important; font-size: 3rem; margin-bottom: 0px !important; }
@@ -72,9 +67,9 @@ st.markdown(
     .monitoring-flex-container {
         display: flex;
         flex-direction: row;
-        justify-content: flex-start; /* Aligns items to the left */
+        justify-content: flex-start; 
         align-items: center;
-        gap: 40px; /* Space between the items */
+        gap: 40px; 
         background-color: #E0E0E0;
         padding: 15px 25px;
         border-radius: 8px;
@@ -85,7 +80,7 @@ st.markdown(
     }
 
     .monitoring-item {
-        white-space: nowrap; /* Prevents text from wrapping to a new line */
+        white-space: nowrap; 
     }
 
     .monitoring-label {
@@ -105,9 +100,8 @@ st.markdown(
     #log-section .log-container-box * {
         font-size: 8px !important;
         line-height: 1.3 !important;
-        /* Classic terminal font stack */
         font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
-        font-weight: 400 !important; /* Forces non-bold */
+        font-weight: 400 !important; 
         letter-spacing: 0.5px !important;
     }
 
