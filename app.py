@@ -156,7 +156,6 @@ if os.path.exists(LOGO_PATH):
 st.markdown('<div class="thick-blue-line"></div>', unsafe_allow_html=True)
 st.markdown("<h1 class='main-title'>CSA – Performance Rilevatori: Sistema di Invio Automatico</h1>", unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
-
 st.divider()
 
 # Survey Selection 
