@@ -23,6 +23,13 @@ logging.basicConfig(
     ]
 )
 
+history_logger = logging.getLogger("SENT_HISTORY")
+history_logger.setLevel(logging.INFO)
+history_handler = logging.FileHandler("logs/sent_history.log", encoding='utf-8')
+history_handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
+history_logger.addHandler(history_handler)
+history_logger.propagate = False 
+
 def process_files(directory, file_prefix, report_type):
     """
     Orchestrator to scan, process, and archive survey files.
@@ -50,7 +57,6 @@ def process_files(directory, file_prefix, report_type):
     transformer = DataTransformer()
     mailer = Mailer(config)
     
-    # Templates selection
     template_name = "folcapi_report.html" if "FOL" in report_type.upper() else "spese_report.html"
 
     for input_file in unprocessed_files:
@@ -69,16 +75,22 @@ def process_files(directory, file_prefix, report_type):
 
             logging.info(f"📊 {len(processed_records)} records ready. Starting mailing...")
 
-            # Email Dispatch
             success_count = 0
             for record in processed_records:
-                if "@" not in str(record.get('email', '')):
-                    logging.warning(f"Invalid email found: {record.get('email')}. Skipping row.")
+                email_addr = record.get('email')
+                rilevatore_name = record.get('name', 'N/A')
+
+                if "@" not in str(email_addr):
+                    logging.warning(f"Invalid email found: {email_addr}. Skipping row.")
                     continue
 
                 context = {"user": record}
-                if mailer.send_performance_email(record['email'], template_name, context):
+                
+                logging.info(f"📨 Sending to: {rilevatore_name} ({email_addr})")
+                
+                if mailer.send_performance_email(email_addr, template_name, context):
                     success_count += 1
+                    history_logger.info(f"SENT | Rilevatore: {rilevatore_name} | Email: {email_addr} | Report: {report_type}")
             
             logging.info(f"✅ Success: {success_count}/{len(processed_records)} emails sent.")
 
